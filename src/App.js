@@ -1,3 +1,4 @@
+// Main react component, where we can edit and build our UI
 import logo from './logo.svg';
 import './App.css';
 
@@ -9,6 +10,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        <p>Hello World!</p>
         <a
           className="App-link"
           href="https://reactjs.org"
