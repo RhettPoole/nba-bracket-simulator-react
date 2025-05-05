@@ -1,25 +1,26 @@
-// Main react component, where we can edit and build our UI
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import CustomerForm from './CustomerForm';
+import CustomerList from './CustomerList';
 import './App.css';
 
 function App() {
+  const [customers, setCustomers] = useState([]);
+  const [successMsg, setSuccessMsg] = useState('');
+
+  function addCustomer(newCustomer) {
+    setCustomers([...customers, newCustomer]);
+    setSuccessMsg('Successfully add ${newCustomer.name}!');
+    setTimeout(() => {
+      setSuccessMsg('');
+    }, 3000)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>Hello World!</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '2rem' }}>
+      <h1>Customer Info Viewer</h1>
+      {successMsg && <div className='success-message'>{successMsg}</div>}
+      <CustomerForm onAdd={addCustomer} />
+      <CustomerList customers={customers} />
     </div>
   );
 }

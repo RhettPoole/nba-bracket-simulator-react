@@ -1,0 +1,24 @@
+.customer-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+  }
+  
+  .customer-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .customer-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  
