@@ -1,27 +1,34 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Signup from './Signup';
+import Login from './Login';
 import CustomerForm from './CustomerForm';
 import CustomerList from './CustomerList';
-import './App.css';
 
 function App() {
-  const [customers, setCustomers] = useState([]);
-  const [successMsg, setSuccessMsg] = useState('');
-
-  function addCustomer(newCustomer) {
-    setCustomers([...customers, newCustomer]);
-    setSuccessMsg('Successfully add ${newCustomer.name}!');
-    setTimeout(() => {
-      setSuccessMsg('');
-    }, 3000)
-  }
+  const [user, setUser] = useState(null);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Customer Info Viewer</h1>
-      {successMsg && <div className='success-message'>{successMsg}</div>}
-      <CustomerForm onAdd={addCustomer} />
-      <CustomerList customers={customers} />
-    </div>
+    <Router>
+      <div className="App">
+        <h1>Customer Portal</h1>
+
+        {!user ? (
+          <>
+            <Routes>
+              <Route path="/" element={<Login onLogin={setUser} />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
+          </>
+***REMOVED*** : (
+          <>
+            <p>Welcome, {user.email}</p>
+            <CustomerForm onAdd={() => {}} />
+            <CustomerList customers={[]} />
+          </>
+***REMOVED***}
+      </div>
+    </Router>
   );
 }
 
