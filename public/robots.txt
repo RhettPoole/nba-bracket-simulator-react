@@ -1,3 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /
+
+!!! This file allows Google's WEB Crawlers to index your content.
+Meaning that it allows it to search for your site based on the content
+within the site. Currently the setting is to disallow Google/Bing to
+searching your site using "Disallow: / "
+Keep this file, you may way to modify it and eventually publish this site.
