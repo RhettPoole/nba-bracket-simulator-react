@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/CustomerList.css';
+import '../styles/CustomerList.css';
 import CustomerCard from './CustomerCard';
 
 function CustomerList({ customers }) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles/CustomerForm.css';
+import '../styles/CustomerForm.css';
 
 function CustomerForm({ onAdd }) {
   const [formData, setFormData] = useState({
