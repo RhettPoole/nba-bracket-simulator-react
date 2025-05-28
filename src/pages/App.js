@@ -13,11 +13,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {doc, getDoc} from 'firebase/firestore';
 
 // Import Components that our App is using.
-<<<<<<< HEAD:src/pages/App.js
 import { db } from '../firebase';
-=======
-import { db } from './firebase';
->>>>>>> d2859b9559e347a1c71957d829816f9346975ad3:src/App.js
 import Signup from './Signup';
 import Login from './Login';
 import CustomerForm from './CustomerForm';
@@ -79,11 +75,11 @@ function App() {
             <CustomerForm onAdd={() => {}} />
             // 'customers' is empty, placeholder for displaying customers from Firestore
             <CustomerList customers= {[]} />
+            <div className='App'>
+            <Bracket />
+        </div>
           </>
 ***REMOVED***}
-        <div className='App'>
-          <Bracket />
-        </div>
       </div>
     </Router>
   );

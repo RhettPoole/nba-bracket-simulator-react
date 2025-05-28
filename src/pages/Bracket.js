@@ -1,80 +1,143 @@
 // This is our bracket logic page
+// Import's React and useState hook. Required to define react components. The useState hook is a React function that allows use to add state to functional components - We can create and manage local state variables within a comonent and enable dynamic behavior.
+import React, { useState } from "react";
+import "../styles/index.css";
+import "../styles/App.css";
+import "../styles/Bracket.css";
 
-import React, { useState } from 'react';
-import '../styles/index.css';
-import '../styles/App.css'
+// 8 East and 8 West teams, creating constants will make our brackets call from local data of teams to choose from.
+const eastTeams = [
+  "Bucks",
+  "Pacers",
+  "Pistons",
+  "Knicks",
+  "Celtics",
+  "Heat",
+  "Magic",
+  "Cavaliers",
+];
+const westTeams = [
+  "Clippers",
+  "Nuggets",
+  "Timberwolves",
+  "Lakers",
+  "Grizzlies",
+  "Warriors",
+  "Rockets",
+  "Thunder",
+];
 
-const teamsList = [
-    // 16 teams in the first round of NBA playoffs
-    'Bucks',
-    'Pacers',
-    'Clippers',
-    'Nuggets',
-    'Pistons',
-    'Knicks',
-    'Timberwolves',
-    'Lakers',
-    'Grizzlies',
-    'Heat',
-    'Celtics',
-    'Magic',
-    'Warriors',
-    'Rockets',
-    'Thunder',
-    'Cavaliers',
-]
-
+// Start defining a React component (reusable piece of UI design and behavior) using an arrow function, same as a function declaration. Could use 'function Bracket() {}', arrow function accomplishes the same task.
 const Bracket = () => {
-    // UseState hook manages the array selectedTeams. selectedTeams is initialized as an array of 16 empty strings.
-    const [selectedTeams, setSelectedTeams] = useState(Array(16).fill(''));
+  const [eastSelected, setEastSelected] = useState(Array(8).fill(""));
+  const [westSelected, setWestSelected] = useState(Array(8).fill(""));
 
-    // Updates the selectedTeams array when a team is selected at a specific index.
-    const handleTeamChange = (index, team) => {
-        const updatedTeams = [...selectedTeams];
-        updatedTeams[index] = team;
-        setSelectedTeams(updatedTeams);
-    }
+  // Defines a function inside of our bracket function to set east teams. takes two parameters, 'idx, team'.
+  const handleEastChange = (idx, team) => {
+    // Creates a shallow copy of the 'eastSelected' array
+    const updated = [...eastSelected];
+    // Updates an element at position 'idx' with a new 'team'
+    updated[idx] = team;
+    // Calls the setEastSelected function function to update the state with a new array.
+    setEastSelected(updated);
+  };
 
-    // 8 matchups in the first round for all 16 teams
-    const matchups = []
-    // Loops through selectedTeams in a pair of 'matchups' and pushes each pair into an array.
-    for (let i = 0; i < selectedTeams.length; i += 2) {
-        matchups.push([selectedTeams[i], selectedTeams[i + 1]]);
-}
+  const handleWestChange = (idx, team) => {
+    const updated = [...westSelected];
+    updated[idx] = team;
+    setWestSelected(updated);
+  };
 
-return (
-    <div className ="bracket">
-        <h1>New Bracket</h1>
-        <button className="create-bracket">Create New Bracket</button>
-        <h2>First Round: Select Teams</h2>
-        <div className="first-round">
-            {selectedTeams.map((team, idx) => (
+  // Create matchups for each side
+  // Create empty object/array for the matchups to interact with. We have to define the matchups, we already have the teams and bracket objects created, but we need the matchups now in a new array before we can start simulating outcomes.
+  const eastMatchups = [];
+  for (let i = 0; i < eastSelected.length; i += 2) {
+    eastMatchups.push([eastSelected[i], eastSelected[i + 1]]);
+  }
+  const westMatchups = [];
+  for (let i = 0; i < westSelected.length; i += 2) {
+    westMatchups.push([westSelected[i], westSelected[i + 1]]);
+  }
+
+  // Define HTML layout
+  return (
+    <div className="bracket">
+      <h1>NBA Playoff Bracket</h1>
+      <div className="bracket-sides">
+        {/*East Side */}
+        <div className="bracket-side">
+          <h2>East</h2>
+          <div className="first-round">
+            {eastSelected.map((team, idx) => (
+              <div className="dropdown-wrapper" key={idx}>
                 <select
-                key={idx}
-                value={team}
-                onChange={e => handleTeamChange(idx, e.target.value)}
-                className="team-dropdown"
+                  value={team}
+                  onChange={(e) => handleEastChange(idx, e.target.value)}
+                  className="team-dropdown"
                 >
-                <option value="">Select Team</option>
-                {teamsList.map(t => (
-                    <option key={t} value={t}>{t}</option>
-        ***REMOVED***)}
+                  <option value="">Select Team</option>
+                  {eastTeams.map((t) => (
+                    <option key = {t} value= {t}>
+                        {t}
+                    </option>
+          ***REMOVED***)}
                 </select>
-
+                {/* Draw a line for every even index (start of a matchup) */}
+                {idx % 2 === 0 && idx < eastSelected.length - 1 && (
+                  <div className="bracket-line"></div>
+        ***REMOVED***}
+              </div>
     ***REMOVED***)}
+          </div>
+          <div className="matchups">
+            {eastMatchups.map(([team1, team2], idx) => (
+              <div key={idx} className="matchup">
+                <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
+              </div>
+    ***REMOVED***)}
+          </div>
         </div>
-        <h2>Matchups</h2>
-            <div className="matchups">
-                {matchups.map(([team1, team2], idx) => (
-                    <div key={idx} className="matchup">
-                        <span>{team1 || 'TBD'}</span> vs <span>{team2 || 'TBD'}</span>
-                    </div>
-        ***REMOVED***)}
-            </div>
-        <h1>Your Current Bracket</h1>
-        
+        {/* West Side */}
+        <div className="bracket-side">
+          <h2>West</h2>
+          <div className="first-round">
+            {westSelected.map((team, idx) => (
+              <div className="dropdown-wrapper" key={idx}>
+                <select
+                  value={team}
+                  onChange={(e) => handleWestChange(idx, e.target.value)}
+                  className="team-dropdown"
+                >
+                  <option value="">Select Team</option>
+                  {westTeams.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+          ***REMOVED***)}
+                </select>
+                {idx % 2 === 0 && idx < westSelected.length - 1 && (
+                  <div className="bracket-line"></div>
+        ***REMOVED***}
+              </div>
+    ***REMOVED***)}
+          </div>
+          <div className="matchups">
+            {westMatchups.map(([team1, team2], idx) => (
+              <div key={idx} className="matchup">
+                <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
+              </div>
+    ***REMOVED***)}
+          </div>
+        </div>
+      </div>
     </div>
-)
+  );
 };
+
+// Start second round logic and design
+// Create new constants for second round logic.
+const[eastSecondRound, seteastSecondRound] = useState(Array(4).fill(""));
+const[westSecondRound, setWestSecondRound] = useState(Array(4).fill(""));
+
 
 export default Bracket;
