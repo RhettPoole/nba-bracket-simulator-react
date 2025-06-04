@@ -1,0 +1,5 @@
+This sprint, focus on just getting the MVP. Right now you can log in to an account, you have a database set up for the logins. But you still need
+- Bracket creation and simulation.
+- Saved brackets for each account.
+- A nav
+- A logo

@@ -134,10 +134,12 @@ const Bracket = () => {
   );
 };
 
+/*
 // Start second round logic and design
 // Create new constants for second round logic.
 const[eastSecondRound, seteastSecondRound] = useState(Array(4).fill(""));
 const[westSecondRound, setWestSecondRound] = useState(Array(4).fill(""));
+*/
 
 
 export default Bracket;
