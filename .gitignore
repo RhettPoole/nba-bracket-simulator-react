@@ -24,3 +24,6 @@ yarn-error.log*
 
 # database
 src/firebase.js
+
+# hide api key
+scrub_key.py
