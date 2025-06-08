@@ -77,24 +77,24 @@ const Bracket = () => {
                 >
                   <option value="">Select Team</option>
                   {eastTeams.map((t) => (
-                    <option key = {t} value= {t}>
-                        {t}
+                    <option key={t} value={t}>
+                      {t}
                     </option>
-          ***REMOVED***)}
+                  ))}
                 </select>
                 {/* Draw a line for every even index (start of a matchup) */}
                 {idx % 2 === 0 && idx < eastSelected.length - 1 && (
                   <div className="bracket-line"></div>
-        ***REMOVED***}
+                )}
               </div>
-    ***REMOVED***)}
+            ))}
           </div>
           <div className="matchups">
             {eastMatchups.map(([team1, team2], idx) => (
               <div key={idx} className="matchup">
                 <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
               </div>
-    ***REMOVED***)}
+            ))}
           </div>
         </div>
         {/* West Side */}
@@ -113,20 +113,20 @@ const Bracket = () => {
                     <option key={t} value={t}>
                       {t}
                     </option>
-          ***REMOVED***)}
+                  ))}
                 </select>
                 {idx % 2 === 0 && idx < westSelected.length - 1 && (
                   <div className="bracket-line"></div>
-        ***REMOVED***}
+                )}
               </div>
-    ***REMOVED***)}
+            ))}
           </div>
           <div className="matchups">
             {westMatchups.map(([team1, team2], idx) => (
               <div key={idx} className="matchup">
                 <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
               </div>
-    ***REMOVED***)}
+            ))}
           </div>
         </div>
       </div>
@@ -140,6 +140,5 @@ const Bracket = () => {
 const[eastSecondRound, seteastSecondRound] = useState(Array(4).fill(""));
 const[westSecondRound, setWestSecondRound] = useState(Array(4).fill(""));
 */
-
 
 export default Bracket;

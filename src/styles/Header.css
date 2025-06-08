@@ -1,0 +1,95 @@
+/* Main Header Container */
+.header-container {
+    width: 100%;
+    background: #222;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Fixed typo: removed space after rgba */
+    padding-bottom: 8px;
+}
+
+/* Top bar: logo, title, user info */
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px 0 40px; /* Increased padding for more height */
+}
+
+/* Logo on the left */
+.header-logo img {
+    height: 64px;      /* Increased logo size */
+    width: auto;
+    display: block;
+}
+
+/* App name centered */
+.header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: rgb(218, 0, 0);
+}
+
+/* User info/login on the right */
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 20px;                /* More space between elements */
+  min-width: 200px;         /* Increased min width */
+  justify-content: flex-end;
+  font-size: 1.3rem;        /* Larger text */
+  padding-right: 8px;       /* Slight right padding */
+}
+
+.logout-btn,
+.login-btn {
+  color: #222;
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;       /* Larger button */
+  font-size: 1.1rem;        /* Larger font */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-left: 12px;        /* More space from text */
+}
+
+.login-btn {
+  text-decoration: none; /* Remove underline from links */
+  display: inline-block; /* Make it behave more like a button */
+  text-align: center;
+}
+
+.logout-btn:hover,
+.login-btn:hover {
+  background: rgb(218, 0, 0);
+  color: #fff;
+}
+
+/* Navigation bar */
+.header-nav {
+  display: flex;
+  justify-content: center;
+  gap: 48px;                /* More space between nav links */
+  margin-top: 16px;
+  padding-bottom: 12px;
+}
+
+.nav-link {
+  color: #222;
+  background: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;        /* Larger nav links */
+  padding: 8px 20px;        /* Larger clickable area */
+  border-radius: 3px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: rgb(218, 0, 0);
+  color: #fff;
+}

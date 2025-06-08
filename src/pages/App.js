@@ -7,19 +7,19 @@
 // Need to use "useEffect" to fetch customer data for the logged in user, currently all you can do is login. Will implement when integrating Firestore further.
 
 //Import React and React Router
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {doc, getDoc} from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
 
 // Import Components that our App is using.
-import { db } from '../firebase';
-import Signup from './Signup';
-import Login from './Login';
-import CustomerForm from './CustomerForm';
-import CustomerList from './CustomerList';
-import Bracket from './Bracket';
-import '../styles/App.css';
+import { db } from "../firebase";
+import Signup from "./Signup";
+import Login from "./Login";
+import CustomerForm from "./CustomerForm";
+import CustomerList from "./CustomerList";
+import Bracket from "./Bracket";
+import "../styles/App.css";
+import Header from "../components/Header";
 
 // 'user' holds the current authenticated user's object
 // 'setUser' is called from Login when login is successful
@@ -34,15 +34,15 @@ function App() {
       if (user) {
         try {
           // Tells the app where we're getting the data from
-          const docRef = doc(db, 'users', user.uid);
-          const docSnap = getDoc(docRef);
-          if ((await docSnap).exists()) {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef); // Await the getDoc call
+          if (docSnap.exists()) {
             setUserData(docSnap.data());
           } else {
-          console.error('No such user in Firestore!');
+            console.error("No such user in Firestore!");
           }
         } catch (error) {
-            console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
         }
       }
     };
@@ -50,36 +50,35 @@ function App() {
     fetchUserData();
   }, [user]);
 
-  // Wraps everything in a Router component for navigation
-  // Displays the header text.
+  // Simple logout handler
+  const handleLogout = () => {
+    setUser(null);
+    setUserData(null);
+    // Add Firebase signOut here if using Firebase Auth
+    // Example: import { getAuth, signOut } from "firebase/auth";
+    // signOut(getAuth());
+  };
+
+  // Place Header outside of Routes so it always shows
   return (
     <Router>
       <div className="App">
-        <h1>Customer Portal</h1>
+        <Header user={user} onLogout={handleLogout} />
 
-        // '!user?' (not logged in) shows login and signup components.
         {!user ? (
+          <Routes>
+            <Route path="/" element={<Login onLogin={setUser} />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        ) : (
           <>
-            <Routes>
-              <Route path="/" element={<Login onLogin={setUser} />} />
-              <Route path="/signup" element={<Signup />} />
-            </Routes>
-          </>
-***REMOVED***
-        // If user is logged in, shows a welcome message + CustomerFrom and CustomerList
-        : (
-          <>
-          // If user is logged in, shows a welcome message + CustomerFrom and CustomerList
-            <p>Welcome, {user.email}</p>
-            // 'onAdd' is empty, placeholder for adding customers to Firestore
             <CustomerForm onAdd={() => {}} />
-            // 'customers' is empty, placeholder for displaying customers from Firestore
-            <CustomerList customers= {[]} />
-            <div className='App'>
-            <Bracket />
-        </div>
+            <CustomerList customers={[]} />
+            <div className="App">
+              <Bracket />
+            </div>
           </>
-***REMOVED***}
+        )}
       </div>
     </Router>
   );
