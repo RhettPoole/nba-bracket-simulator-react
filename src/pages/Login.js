@@ -25,6 +25,9 @@ function Login({ onLogin }) {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
         <button type="submit">Log In</button>
       </form>
+      <p>
+        Don't have an account? <a href="/signup">Sign up</a>
+      </p>
       {error && <p>{error}</p>}
     </div>
   );

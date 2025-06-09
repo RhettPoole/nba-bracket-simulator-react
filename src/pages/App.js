@@ -3,7 +3,6 @@
 
 // THINGS THAT NEED TO BE DONE:
 // Eventually need to move routing into a Routes.js file, to keep App.js clean and organized.
-// Need to add a NavBar or Header for users to logout and navigate.
 // Need to use "useEffect" to fetch customer data for the logged in user, currently all you can do is login. Will implement when integrating Firestore further.
 
 //Import React and React Router

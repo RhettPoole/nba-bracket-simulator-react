@@ -1,144 +1,205 @@
-// This is our bracket logic page
-// Import's React and useState hook. Required to define react components. The useState hook is a React function that allows use to add state to functional components - We can create and manage local state variables within a comonent and enable dynamic behavior.
 import React, { useState } from "react";
 import "../styles/index.css";
 import "../styles/App.css";
 import "../styles/Bracket.css";
+import { db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-// 8 East and 8 West teams, creating constants will make our brackets call from local data of teams to choose from.
 const eastTeams = [
-  "Bucks",
-  "Pacers",
-  "Pistons",
-  "Knicks",
-  "Celtics",
-  "Heat",
-  "Magic",
-  "Cavaliers",
-];
-const westTeams = [
-  "Clippers",
-  "Nuggets",
-  "Timberwolves",
-  "Lakers",
-  "Grizzlies",
-  "Warriors",
-  "Rockets",
-  "Thunder",
+  "1 Cavaliers",
+  "7 Magic",
+  "3 Knicks",
+  "4 Pacers",
+  "2 Celtics",
+  "8 Heat",
+  "5 Bucks",
+  "6 Pistons",
 ];
 
-// Start defining a React component (reusable piece of UI design and behavior) using an arrow function, same as a function declaration. Could use 'function Bracket() {}', arrow function accomplishes the same task.
+const eastFirstRoundMatchups = [
+  [eastTeams[0], eastTeams[5]], // 1 vs 8
+  [eastTeams[3], eastTeams[6]], // 4 vs 5
+  [eastTeams[4], eastTeams[1]], // 2 vs 7
+  [eastTeams[2], eastTeams[7]], // 3 vs 6
+];
+
 const Bracket = () => {
-  const [eastSelected, setEastSelected] = useState(Array(8).fill(""));
-  const [westSelected, setWestSelected] = useState(Array(8).fill(""));
+  const [eastWinners, setEastWinners] = useState(Array(4).fill(""));
+  const [eastSemis, setEastSemis] = useState(Array(2).fill(""));
+  const [eastFinal, setEastFinal] = useState("");
+  const [simBracket, setSimBracket] = useState({
+    winners: Array(4).fill(""),
+    semis: Array(2).fill(""),
+    final: "",
+  });
+  
+  const saveBracket = async () => {
+  const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to save your bracket.");
+        return;
+      }
 
-  // Defines a function inside of our bracket function to set east teams. takes two parameters, 'idx, team'.
-  const handleEastChange = (idx, team) => {
-    // Creates a shallow copy of the 'eastSelected' array
-    const updated = [...eastSelected];
-    // Updates an element at position 'idx' with a new 'team'
-    updated[idx] = team;
-    // Calls the setEastSelected function function to update the state with a new array.
-    setEastSelected(updated);
+      const bracketData = {
+        winners: eastWinners,
+        semis: eastSemis,
+        final: eastFinal,
+        timestamp: new Date(),
+      };
+
+      try {
+        await setDoc(doc(db, "brackets", user.uid), bracketData);
+        alert("Bracket saved!");
+      } catch (error) {
+        alert("Error saving bracket: " + error.message);
+      }
+    };
+
+  const handleEastWinnerChange = (matchupIdx, winner) => {
+    const updated = [...eastWinners];
+    updated[matchupIdx] = winner;
+    setEastWinners(updated);
+    setEastSemis(Array(2).fill(""));
+    setEastFinal("");
   };
 
-  const handleWestChange = (idx, team) => {
-    const updated = [...westSelected];
-    updated[idx] = team;
-    setWestSelected(updated);
+  const handleEastSemiChange = (semiIdx, winner) => {
+    const updated = [...eastSemis];
+    updated[semiIdx] = winner;
+    setEastSemis(updated);
+    setEastFinal("");
   };
 
-  // Create matchups for each side
-  // Create empty object/array for the matchups to interact with. We have to define the matchups, we already have the teams and bracket objects created, but we need the matchups now in a new array before we can start simulating outcomes.
-  const eastMatchups = [];
-  for (let i = 0; i < eastSelected.length; i += 2) {
-    eastMatchups.push([eastSelected[i], eastSelected[i + 1]]);
-  }
-  const westMatchups = [];
-  for (let i = 0; i < westSelected.length; i += 2) {
-    westMatchups.push([westSelected[i], westSelected[i + 1]]);
-  }
+  const handleEastFinalChange = (winner) => {
+    setEastFinal(winner);
+  };
 
-  // Define HTML layout
-  return (
+  const simulateEastBracket = () => {
+    const firstRoundWinners = eastFirstRoundMatchups.map(([teamA, teamB]) =>
+      eastTeams.indexOf(teamA) < eastTeams.indexOf(teamB) ? teamA : teamB
+    );
+
+    const semiWinners = [0, 1].map((semiIdx) => {
+      const teamA = firstRoundWinners[semiIdx * 2];
+      const teamB = firstRoundWinners[semiIdx * 2 + 1];
+      return eastTeams.indexOf(teamA) < eastTeams.indexOf(teamB)
+        ? teamA
+        : teamB;
+    });
+
+    const finalWinner =
+      eastTeams.indexOf(semiWinners[0]) < eastTeams.indexOf(semiWinners[1])
+        ? semiWinners[0]
+        : semiWinners[1];
+
+    setSimBracket({
+      winners: firstRoundWinners,
+      semis: semiWinners,
+      final: finalWinner,
+    });
+  };
+
+  const renderBracket = (winners, semis, final, label, editable = false) => (
     <div className="bracket">
-      <h1>NBA Playoff Bracket</h1>
-      <div className="bracket-sides">
-        {/*East Side */}
-        <div className="bracket-side">
-          <h2>East</h2>
-          <div className="first-round">
-            {eastSelected.map((team, idx) => (
-              <div className="dropdown-wrapper" key={idx}>
+      <h3 style={{ textAlign: "center", width: "100%" }}>{label}</h3>
+
+      {/* First Round */}
+      <div className="column first-round">
+        {eastFirstRoundMatchups.map((matchup, idx) => (
+          <div className="matchup" key={idx}>
+            {editable ? (
+              <select
+                value={winners[idx]}
+                onChange={(e) => handleEastWinnerChange(idx, e.target.value)}
+              >
+                <option value="">Select</option>
+                <option value={matchup[0]}>{matchup[0]}</option>
+                <option value={matchup[1]}>{matchup[1]}</option>
+              </select>
+            ) : (
+              <span>{winners[idx] || `${matchup[0]} / ${matchup[1]}`}</span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Semifinals */}
+      <div className="column semifinals">
+        {[0, 1].map((semiIdx) => {
+          const teamA = winners[semiIdx * 2];
+          const teamB = winners[semiIdx * 2 + 1];
+          return (
+            <div className="matchup" key={semiIdx}>
+              {editable ? (
                 <select
-                  value={team}
-                  onChange={(e) => handleEastChange(idx, e.target.value)}
-                  className="team-dropdown"
+                  value={semis[semiIdx]}
+                  onChange={(e) =>
+                    handleEastSemiChange(semiIdx, e.target.value)
+                  }
+                  disabled={!teamA || !teamB}
                 >
-                  <option value="">Select Team</option>
-                  {eastTeams.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
+                  <option value="">Select</option>
+                  {teamA && <option value={teamA}>{teamA}</option>}
+                  {teamB && <option value={teamB}>{teamB}</option>}
                 </select>
-                {/* Draw a line for every even index (start of a matchup) */}
-                {idx % 2 === 0 && idx < eastSelected.length - 1 && (
-                  <div className="bracket-line"></div>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="matchups">
-            {eastMatchups.map(([team1, team2], idx) => (
-              <div key={idx} className="matchup">
-                <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* West Side */}
-        <div className="bracket-side">
-          <h2>West</h2>
-          <div className="first-round">
-            {westSelected.map((team, idx) => (
-              <div className="dropdown-wrapper" key={idx}>
-                <select
-                  value={team}
-                  onChange={(e) => handleWestChange(idx, e.target.value)}
-                  className="team-dropdown"
-                >
-                  <option value="">Select Team</option>
-                  {westTeams.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-                {idx % 2 === 0 && idx < westSelected.length - 1 && (
-                  <div className="bracket-line"></div>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="matchups">
-            {westMatchups.map(([team1, team2], idx) => (
-              <div key={idx} className="matchup">
-                <span>{team1 || "TBD"}</span> vs <span>{team2 || "TBD"}</span>
-              </div>
-            ))}
-          </div>
+              ) : (
+                <span>
+                  {semis[semiIdx] || `${teamA || "?"} / ${teamB || "?"}`}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Finals */}
+      <div className="column finals">
+        <div className="matchup">
+          {editable ? (
+            <select
+              value={final}
+              onChange={(e) => handleEastFinalChange(e.target.value)}
+              disabled={!semis[0] || !semis[1]}
+            >
+              <option value="">Select</option>
+              {semis[0] && <option value={semis[0]}>{semis[0]}</option>}
+              {semis[1] && <option value={semis[1]}>{semis[1]}</option>}
+            </select>
+          ) : (
+            <span>{final || `${semis[0] || "?"} / ${semis[1] || "?"}`}</span>
+          )}
         </div>
       </div>
+
+      {/* Champion */}
+      <div className="column champion">
+        <div className="matchup champion">🏆 {final || "TBD"}</div>
+      </div>
+      <button onClick={saveBracket} style={{ marginBottom: "1rem" }}>
+        Save Bracket
+      </button>
     </div>
   );
-};
 
-/*
-// Start second round logic and design
-// Create new constants for second round logic.
-const[eastSecondRound, seteastSecondRound] = useState(Array(4).fill(""));
-const[westSecondRound, setWestSecondRound] = useState(Array(4).fill(""));
-*/
+  return (
+    <main
+      style={{ flexDirection: "column", display: "flex", alignItems: "center" }}
+    >
+      {renderBracket(eastWinners, eastSemis, eastFinal, "Your Bracket", true)}
+      <div style={{ margin: "2rem 0" }}>
+        <button onClick={simulateEastBracket}>Simulate East Bracket</button>
+      </div>
+      {simBracket.final &&
+        renderBracket(
+          simBracket.winners,
+          simBracket.semis,
+          simBracket.final,
+          "Simulated Bracket"
+        )}
+    </main>
+  );
+};
 
 export default Bracket;

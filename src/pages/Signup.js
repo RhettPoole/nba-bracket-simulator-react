@@ -25,18 +25,16 @@ function Signup() {
 
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
-        role: role,
         name: name,
         phone: phone,
         address: address,
         photo: photo,
       });
 
-      setMessage(`Account created as ${role}! You can now log in.`);
+      setMessage(`Account created! You can now log in.`);
       // Clear the form after the customer creates an account
       setEmail('');
       setPassword('');
-      setRole('customer');
       setName('');
       setPhone('');
       setAddress('');
@@ -58,14 +56,6 @@ function Signup() {
         <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone Number" required />
         <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Address" required />
         <input value={photo} onChange={(e) => setPhoto(e.target.value)} placeholder="Photo URL" required />
-        
-        <label>
-          Role:
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="customer">Customer</option>
-            <option value="manager">Manager</option>
-          </select>
-        </label>
 
         <button type="submit">Sign Up</button>
       </form>
