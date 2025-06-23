@@ -16,7 +16,7 @@ import Signup from "./Signup";
 import Login from "./Login";
 import CustomerForm from "./CustomerForm";
 import CustomerList from "./CustomerList";
-import Bracket from "./Bracket";
+import BracketPage from "./BracketPage";
 import "../styles/App.css";
 import Header from "../components/Header";
 
@@ -74,7 +74,7 @@ function App() {
             <CustomerForm onAdd={() => {}} />
             <CustomerList customers={[]} />
             <div className="App">
-              <Bracket />
+              <BracketPage />
             </div>
           </>
         )}

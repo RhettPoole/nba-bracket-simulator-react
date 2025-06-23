@@ -1,0 +1,15 @@
+6.11 Class notes - JSON
+JavaScript Object Notation
+
+6.16 Class notes - Networking
+Seven Layer OSI Model
+Physical - Wires, physical network equipment.
+Data Link - Handles node-to-node data transfer between devices on the same network.
+Network - Conducts routing between different networks using your IP address.
+Transport - TCP and UDP handles data transmission between devices using the aforementioned protocols.
+Session - Manages connections and the opening and closing of sessions.
+Blank - Missed this one 
+Application - Top layer that the user interacts with and that we, as programmers, build.
+
+6.18 Class notes - Job Market
+AI is reshaping tech hiring, reducing the demand for entry level jobs.
