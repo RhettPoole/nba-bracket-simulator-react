@@ -24,6 +24,13 @@ export const westFirstRoundMatchups = [
   [westTeams[2], westTeams[5]], // 3 vs 6
 ];
 
+// Helper to extract rank from team string like "1 Cavaliers"
+function getRank(team) {
+  if (!team) return 99;
+  const match = team.match(/^(\d+)/);
+  return match ? parseInt(match[1], 10) : 99;
+}
+
 export function useBracketLogic() {
   // East state
   const [eastWinners, setEastWinners] = useState(Array(4).fill(""));
@@ -100,17 +107,15 @@ export function useBracketLogic() {
   // Simulate East Bracket
   const simulateEastBracket = () => {
     const firstRoundWinners = eastFirstRoundMatchups.map(([teamA, teamB]) =>
-      eastTeams.indexOf(teamA) < eastTeams.indexOf(teamB) ? teamA : teamB
+      getRank(teamA) < getRank(teamB) ? teamA : teamB
     );
     const semiWinners = [0, 1].map((semiIdx) => {
       const teamA = firstRoundWinners[semiIdx * 2];
       const teamB = firstRoundWinners[semiIdx * 2 + 1];
-      return eastTeams.indexOf(teamA) < eastTeams.indexOf(teamB)
-        ? teamA
-        : teamB;
+      return getRank(teamA) < getRank(teamB) ? teamA : teamB;
     });
     const finalWinner =
-      eastTeams.indexOf(semiWinners[0]) < eastTeams.indexOf(semiWinners[1])
+      getRank(semiWinners[0]) < getRank(semiWinners[1])
         ? semiWinners[0]
         : semiWinners[1];
     setSimBracket({
@@ -123,17 +128,15 @@ export function useBracketLogic() {
   // Simulate West Bracket
   const simulateWestBracket = () => {
     const firstRoundWinners = westFirstRoundMatchups.map(([teamA, teamB]) =>
-      westTeams.indexOf(teamA) < westTeams.indexOf(teamB) ? teamA : teamB
+      getRank(teamA) < getRank(teamB) ? teamA : teamB
     );
     const semiWinners = [0, 1].map((semiIdx) => {
       const teamA = firstRoundWinners[semiIdx * 2];
       const teamB = firstRoundWinners[semiIdx * 2 + 1];
-      return westTeams.indexOf(teamA) < westTeams.indexOf(teamB)
-        ? teamA
-        : teamB;
+      return getRank(teamA) < getRank(teamB) ? teamA : teamB;
     });
     const finalWinner =
-      westTeams.indexOf(semiWinners[0]) < westTeams.indexOf(semiWinners[1])
+      getRank(semiWinners[0]) < getRank(semiWinners[1])
         ? semiWinners[0]
         : semiWinners[1];
     setSimWestBracket({

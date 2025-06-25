@@ -19,6 +19,7 @@ import CustomerList from "./CustomerList";
 import BracketPage from "./BracketPage";
 import "../styles/App.css";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // 'user' holds the current authenticated user's object
 // 'setUser' is called from Login when login is successful
@@ -78,6 +79,7 @@ function App() {
             </div>
           </>
         )}
+        <Footer />
       </div>
     </Router>
   );
