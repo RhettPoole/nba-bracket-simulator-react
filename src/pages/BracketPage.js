@@ -7,7 +7,7 @@ import "../styles/Bracket.css";
 import { useBracketLogic } from "../components/Bracket/BracketLogic";
 import Bracket from "../components/Bracket/Bracket";
 import { db } from "../firebase";
-import { doc, setDoc, collection, getDocs, getDoc } from "firebase/firestore";
+import { doc, setDoc, collection, getDocs, getDoc, deleteDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 export default function BracketPage() {
@@ -107,6 +107,35 @@ export default function BracketPage() {
     }
   };
 
+  // Delete a bracket
+  const deleteBracket = async (bracketId) => {
+    if (!bracketId) return;
+    
+    const confirmDelete = window.confirm("Are you sure you want to delete this bracket? This action cannot be undone.");
+    if (!confirmDelete) return;
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    try {
+      await deleteDoc(doc(db, "users", user.uid, "brackets", bracketId));
+      alert("Bracket deleted!");
+      
+      // Clear current bracket if it was the one being deleted
+      if (selectedBracketId === bracketId) {
+        createNewBracket();
+      }
+      
+      // Refresh bracket list
+      const bracketsCol = collection(db, "users", user.uid, "brackets");
+      const snap = await getDocs(bracketsCol);
+      setUserBrackets(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      alert("Error deleting bracket: " + error.message);
+    }
+  };
+
   // Create new bracket
   const createNewBracket = () => {
     setBracketName("");
@@ -157,6 +186,14 @@ export default function BracketPage() {
               </option>
             ))}
           </select>
+          {selectedBracketId && (
+            <button 
+              onClick={() => deleteBracket(selectedBracketId)}
+              style={{ padding: "8px 16px", backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+            >
+              Delete Bracket
+            </button>
+          )}
         </div>
         {selectedBracketId && (
           <div style={{ marginTop: "10px", fontSize: "14px", color: "#666" }}>
