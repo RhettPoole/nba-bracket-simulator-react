@@ -97,7 +97,7 @@ export function Bracket({
       <ul className="round">
         <li className="spacer" />
         <li className="game game-top winner champion">
-          <span>🏆 {final || "TBD"}</span>
+          <span>{final || "TBD"}</span>
         </li>
         <li className="spacer" />
       </ul>

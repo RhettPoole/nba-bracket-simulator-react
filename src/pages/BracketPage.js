@@ -544,7 +544,7 @@ export default function BracketPage() {
                 color: "#b8860b",
                 textShadow: "2px 2px 4px rgba(0,0,0,0.2)"
               }}>
-                <strong>{overallChampion}</strong>
+               🏆 <strong>{overallChampion}</strong>
               </div>
               <div style={{
                 fontSize: "1.2rem",

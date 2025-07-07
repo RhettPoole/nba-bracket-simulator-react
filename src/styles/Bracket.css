@@ -1,23 +1,33 @@
 /*
- *  Reference https://codepen.io/aronduby/pen/DRJrJN
-*/
+ *  Modern NBA Bracket Styling
+ *  Red/Grey/White Color Scheme
+ */
 
 main {
   display: flex;
   flex-direction: row;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  overflow-x: auto;
 }
 
 .round {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 200px;
+  width: 240px;
   list-style: none;
   padding: 0;
+  margin: 0 15px;
+  position: relative;
 }
 
   .round .spacer {
     flex-grow: 1;
+    min-height: 20px;
   }
   .round .spacer:first-child,
   .round .spacer:last-child {
@@ -26,53 +36,221 @@ main {
 
   .round .game-spacer {
     flex-grow: 1;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
   }
 
 /*
- *  General Styles
-*/
-
-body {
-  font-family: sans-serif;
-  font-size: small;
-  padding: 10px;
-  line-height: 1.4em;
-}
+ *  Game Styling
+ */
 
 li.game {
-  padding-left: 20px;
+  padding: 0;
+  margin: 12px 0;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-  li.game.winner {
-    font-weight: bold;
-  }
-
-  /* Make round-1 team names clickable */
-  .round:nth-of-type(1) .game span {
-    cursor: pointer;
-  }
-
-  li.game span {
-    float: right;
-    margin-right: 5px;
-  }
-
-li.game-top {
-  border-bottom: 1px solid #aaa;
+li.game:hover {
+  border-color: rgb(218, 0, 0);
+  box-shadow: 0 4px 12px rgba(218, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
-li.game-spacer {
-  border-right: 1px solid #aaa;
-  min-height: 40px;
+li.game.winner {
+  font-weight: bold;
+  background: linear-gradient(135deg, rgba(218, 0, 0, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+  border-color: rgb(218, 0, 0);
 }
 
-li.game-bottom {
-  border-top: 1px solid #aaa;
-}
-
-/* Optional: style your save button */
-.save-button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
+li.game select {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
   cursor: pointer;
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.3s ease;
+  line-height: 1.2;
+}
+
+li.game select:focus {
+  background: rgba(218, 0, 0, 0.05);
+}
+
+li.game select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+
+li.game span {
+  display: block;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  text-align: left;
+  margin: 0;
+  float: none;
+  line-height: 1.2;
+  min-height: 20px;
+}
+
+/* Round specific styling */
+.round:nth-child(1) li.game {
+  background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+}
+
+.round:nth-child(2) li.game {
+  background: linear-gradient(135deg, rgba(218, 0, 0, 0.05) 0%, white 100%);
+}
+
+.round:nth-child(3) li.game {
+  background: linear-gradient(135deg, rgba(218, 0, 0, 0.1) 0%, white 100%);
+}
+
+.round:nth-child(4) li.game {
+  background: linear-gradient(135deg, rgba(218, 0, 0, 0.15) 0%, white 100%);
+  border: 2px solid rgba(218, 0, 0, 0.3);
+}
+
+/* Champion styling */
+.round:last-child li.game.champion {
+  background: linear-gradient(135deg, rgb(218, 0, 0) 0%, #d32f2f 100%);
+  color: white;
+  border: 3px solid #b71c1c;
+  box-shadow: 0 8px 25px rgba(218, 0, 0, 0.4);
+  animation: championPulse 3s infinite;
+}
+
+.round:last-child li.game.champion span {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes championPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(218, 0, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(218, 0, 0, 0.6);
+  }
+}
+
+/* Clean bracket design without connecting lines */
+/* The card layout and visual hierarchy makes the flow clear */
+
+li.game {
+  position: relative;
+  z-index: 2;
+}
+
+/* Remove all connecting lines for cleaner look */
+li.game::after {
+  display: none;
+}
+
+.round::after {
+  display: none;
+}
+
+/* Spacer styling */
+li.game-spacer {
+  min-height: 20px;
+  position: relative;
+}
+
+.round .spacer {
+  flex-grow: 1;
+  min-height: 15px;
+}
+.round .spacer:first-child,
+.round .spacer:last-child {
+  flex-grow: 1.5;
+  min-height: 10px;
+}
+
+/* Save button styling */
+.save-button {
+  margin-top: 2rem;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, rgb(218, 0, 0) 0%, #d32f2f 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 15px rgba(218, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.save-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(218, 0, 0, 0.4);
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+    overflow-x: scroll;
+  }
+  
+  .round {
+    width: 180px;
+    margin: 0 5px;
+  }
+  
+  li.game {
+    margin: 6px 0;
+  }
+  
+  li.game select,
+  li.game span {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+/* Dark mode support for future */
+@media (prefers-color-scheme: dark) {
+  main {
+    background: rgba(34, 34, 34, 0.95);
+  }
+  
+  li.game {
+    background: #2c2c2c;
+    border-color: #444;
+    color: white;
+  }
+  
+  li.game span,
+  li.game select {
+    color: white;
+  }
+  
+  li.game:hover {
+    border-color: rgb(218, 0, 0);
+  }
 }
