@@ -1,4 +1,4 @@
-// Main Bracket component, UI only
+// Main Bracket component, UI only, https://codepen.io/aronduby/pen/DRJrJN
 import React from "react";
 import "../../styles/Bracket.css";
 

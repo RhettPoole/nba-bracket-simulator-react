@@ -34,7 +34,6 @@ function Header({ user, onLogout }) {
       {/* Nav bar */}
       <nav className="header-nav">
         <Link to="/" className="nav-link">Home</Link>
-        <Link to="/brackets" className="nav-link">Brackets</Link>
         <Link to="/account" className="nav-link">Account Info</Link>
         <Link to="/contact" className="nav-link">Contact Us</Link>
       </nav>

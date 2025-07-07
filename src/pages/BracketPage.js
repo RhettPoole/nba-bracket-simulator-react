@@ -21,8 +21,13 @@ export default function BracketPage() {
     handleWestWinnerChange, handleWestSemiChange, handleWestFinalChange,
     handleOverallChampionChange,
     simulateEastBracket, simulateWestBracket,
+    // State setters for loading saved brackets
+    setEastWinners, setEastSemis, setEastFinal,
+    setWestWinners, setWestSemis, setWestFinal,
+    setOverallChampion,
   } = useBracketLogic();
 
+  // Bracket management state
   const [bracketName, setBracketName] = useState("");
   const [userBrackets, setUserBrackets] = useState([]); // [{id, name, data}]
   const [selectedBracketId, setSelectedBracketId] = useState("");
@@ -33,9 +38,13 @@ export default function BracketPage() {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) return;
-      const bracketsCol = collection(db, "users", user.uid, "brackets");
-      const snap = await getDocs(bracketsCol);
-      setUserBrackets(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      try {
+        const bracketsCol = collection(db, "users", user.uid, "brackets");
+        const snap = await getDocs(bracketsCol);
+        setUserBrackets(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (error) {
+        console.error("Error fetching brackets:", error);
+      }
     };
     fetchBrackets();
   }, []);
@@ -60,7 +69,7 @@ export default function BracketPage() {
       timestamp: new Date(),
     };
     try {
-      const bracketId = selectedBracketId || bracketName;
+      const bracketId = selectedBracketId || bracketName.replace(/\s+/g, '-').toLowerCase();
       await setDoc(doc(db, "users", user.uid, "brackets", bracketId), bracketData);
       alert("Bracket saved!");
       setSelectedBracketId(bracketId);
@@ -75,48 +84,86 @@ export default function BracketPage() {
 
   // Load a bracket by id
   const loadBracket = async (bracketId) => {
+    if (!bracketId) return;
     const auth = getAuth();
     const user = auth.currentUser;
     if (!user) return;
-    const bracketDoc = await getDoc(doc(db, "users", user.uid, "brackets", bracketId));
-    if (bracketDoc.exists()) {
-      const data = bracketDoc.data();
-      setBracketName(data.name || "");
-      setSelectedBracketId(bracketId);
-      setEastWinners(data.east.winners || Array(4).fill(""));
-      setEastSemis(data.east.semis || Array(2).fill(""));
-      setEastFinal(data.east.final || "");
-      setWestWinners(data.west.winners || Array(4).fill(""));
-      setWestSemis(data.west.semis || Array(2).fill(""));
-      setWestFinal(data.west.final || "");
-      setOverallChampion(data.overallChampion || "");
+    try {
+      const bracketDoc = await getDoc(doc(db, "users", user.uid, "brackets", bracketId));
+      if (bracketDoc.exists()) {
+        const data = bracketDoc.data();
+        setBracketName(data.name || "");
+        setSelectedBracketId(bracketId);
+        setEastWinners(data.east?.winners || Array(4).fill(""));
+        setEastSemis(data.east?.semis || Array(2).fill(""));
+        setEastFinal(data.east?.final || "");
+        setWestWinners(data.west?.winners || Array(4).fill(""));
+        setWestSemis(data.west?.semis || Array(2).fill(""));
+        setWestFinal(data.west?.final || "");
+        setOverallChampion(data.overallChampion || "");
+      }
+    } catch (error) {
+      alert("Error loading bracket: " + error.message);
     }
+  };
+
+  // Create new bracket
+  const createNewBracket = () => {
+    setBracketName("");
+    setSelectedBracketId("");
+    setEastWinners(Array(4).fill(""));
+    setEastSemis(Array(2).fill(""));
+    setEastFinal("");
+    setWestWinners(Array(4).fill(""));
+    setWestSemis(Array(2).fill(""));
+    setWestFinal("");
+    setOverallChampion("");
   };
 
   return (
     <main style={{ flexDirection: "column", display: "flex", alignItems: "center" }}>
-      {/* Bracket selection and naming */}
-      <div style={{ margin: "1rem 0" }}>
-        <input
-          type="text"
-          placeholder="Bracket Name"
-          value={bracketName}
-          onChange={e => setBracketName(e.target.value)}
-          style={{ marginRight: 8 }}
-        />
-        <button onClick={() => { setBracketName(""); setSelectedBracketId(""); setEastWinners(Array(4).fill("")); setEastSemis(Array(2).fill("")); setEastFinal(""); setWestWinners(Array(4).fill("")); setWestSemis(Array(2).fill("")); setWestFinal(""); setOverallChampion(""); }}>New Bracket</button>
-        <select
-          value={selectedBracketId}
-          onChange={e => loadBracket(e.target.value)}
-          style={{ marginLeft: 8 }}
-        >
-          <option value="">Select Saved Bracket</option>
-          {userBrackets.map(b => (
-            <option key={b.id} value={b.id}>{b.name}</option>
-          ))}
-        </select>
+      {/* Bracket Management */}
+      <div style={{ margin: "1rem 0", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#f9f9f9" }}>
+        <h3>Bracket Management</h3>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+          <input
+            type="text"
+            placeholder="Enter bracket name..."
+            value={bracketName}
+            onChange={(e) => setBracketName(e.target.value)}
+            style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", minWidth: "200px" }}
+          />
+          <button 
+            onClick={saveBracket}
+            style={{ padding: "8px 16px", backgroundColor: "#2d72d9", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+          >
+            Save Bracket
+          </button>
+          <button 
+            onClick={createNewBracket}
+            style={{ padding: "8px 16px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+          >
+            New Bracket
+          </button>
+          <select
+            value={selectedBracketId}
+            onChange={(e) => loadBracket(e.target.value)}
+            style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", minWidth: "200px" }}
+          >
+            <option value="">Select saved bracket...</option>
+            {userBrackets.map(bracket => (
+              <option key={bracket.id} value={bracket.id}>
+                {bracket.name} ({new Date(bracket.timestamp?.seconds * 1000).toLocaleDateString()})
+              </option>
+            ))}
+          </select>
+        </div>
+        {selectedBracketId && (
+          <div style={{ marginTop: "10px", fontSize: "14px", color: "#666" }}>
+            Currently editing: <strong>{bracketName}</strong>
+          </div>
+        )}
       </div>
-
       {/* East Bracket */}
       <Bracket
         winners={eastWinners}
@@ -128,7 +175,6 @@ export default function BracketPage() {
         handleWinnerChange={handleEastWinnerChange}
         handleSemiChange={handleEastSemiChange}
         handleFinalChange={handleEastFinalChange}
-        onSave={saveBracket}
       />
       <div style={{ margin: "2rem 0" }}>
         <button onClick={simulateEastBracket}>Simulate East Bracket</button>
@@ -155,7 +201,6 @@ export default function BracketPage() {
         handleWinnerChange={handleWestWinnerChange}
         handleSemiChange={handleWestSemiChange}
         handleFinalChange={handleWestFinalChange}
-        onSave={saveBracket}
       />
       <div style={{ margin: "2rem 0" }}>
         <button onClick={simulateWestBracket}>Simulate West Bracket</button>
