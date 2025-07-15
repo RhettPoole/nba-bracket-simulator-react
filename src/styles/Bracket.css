@@ -73,7 +73,7 @@ li.game select {
   width: 100%;
   padding: 14px 16px;
   border: none;
-  background: transparent;
+  background: white;
   font-size: 14px;
   font-weight: 500;
   color: #2c3e50;
@@ -82,16 +82,27 @@ li.game select {
   outline: none;
   transition: all 0.3s ease;
   line-height: 1.2;
+  border: 1px solid #e9ecef;
+}
+
+li.game select option {
+  background: white;
+  color: #2c3e50;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 li.game select:focus {
   background: rgba(218, 0, 0, 0.05);
+  border-color: #da0000;
 }
 
 li.game select:disabled {
   cursor: not-allowed;
   opacity: 0.6;
   background: #f8f9fa;
+  color: #6c757d;
 }
 
 li.game span {
@@ -190,14 +201,14 @@ li.game-spacer {
 .save-button {
   margin-top: 2rem;
   padding: 12px 24px;
-  background: linear-gradient(135deg, rgb(218, 0, 0) 0%, #d32f2f 100%);
+  background: green;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 4px 15px rgba(218, 0, 0, 0.3);
+  box-shadow: green;
   transition: all 0.3s ease;
   display: block;
   margin-left: auto;
@@ -206,8 +217,8 @@ li.game-spacer {
 
 .save-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(218, 0, 0, 0.4);
-  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  box-shadow: grey;
+  background: greenyellow;
 }
 
 /* Responsive design */
@@ -248,6 +259,21 @@ li.game-spacer {
   li.game span,
   li.game select {
     color: white;
+    background: #2c2c2c;
+  }
+  
+  li.game select {
+    border-color: #444;
+  }
+  
+  li.game select option {
+    background: #2c2c2c;
+    color: white;
+  }
+  
+  li.game select:focus {
+    background: rgba(218, 0, 0, 0.2);
+    border-color: #da0000;
   }
   
   li.game:hover {

@@ -18,7 +18,7 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div>
+    <div className="login-form">
       <h2>Log In</h2>
       <form onSubmit={handleLogin}>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
@@ -28,7 +28,7 @@ function Login({ onLogin }) {
       <p>
         Don't have an account? <a href="/signup">Sign up</a>
       </p>
-      {error && <p>{error}</p>}
+      {error && <p style={{color: 'red'}}>{error}</p>}
     </div>
   );
 }

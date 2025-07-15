@@ -29,11 +29,11 @@ export function Bracket({
                   onChange={(e) => handleWinnerChange(idx, e.target.value)}
                 >
                   <option value="">Select</option>
-                  <option value={matchup[0]}>{matchup[0]}</option>
-                  <option value={matchup[1]}>{matchup[1]}</option>
+                  <option value={matchup[0].name}>{matchup[0].name}</option>
+                  <option value={matchup[1].name}>{matchup[1].name}</option>
                 </select>
               ) : (
-                <span>{winners[idx] || `${matchup[0]} / ${matchup[1]}`}</span>
+                <span>{winners[idx] || `${matchup[0].name} / ${matchup[1].name}`}</span>
               )}
             </li>
             <li className="game-spacer" />

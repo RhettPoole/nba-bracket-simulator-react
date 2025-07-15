@@ -209,7 +209,7 @@ export default function BracketPage() {
             onClick={saveBracket}
             style={{ 
               padding: "12px 24px", 
-              backgroundColor: "rgb(218, 0, 0)", 
+              backgroundColor: "green", 
               color: "white", 
               border: "none", 
               borderRadius: "8px", 
@@ -219,8 +219,8 @@ export default function BracketPage() {
               transition: "all 0.3s ease",
               boxShadow: "0 4px 12px rgba(218, 0, 0, 0.3)"
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = "rgb(153, 1, 1)"}
-            onMouseOut={(e) => e.target.style.backgroundColor = "rgb(218, 0, 0)"}
+            onMouseOver={(e) => e.target.style.backgroundColor = "darkgreen"}
+            onMouseOut={(e) => e.target.style.backgroundColor = "green"}
           >
             Save Bracket
           </button>
